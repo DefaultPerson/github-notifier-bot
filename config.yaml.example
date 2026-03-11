@@ -1,0 +1,25 @@
+# GitHub Notifier Bot - Channel Configuration
+# Each channel can subscribe to specific repos and event types
+
+channels:
+  # Main notifications channel
+  - chat_id: -1002188528272
+    thread_id: 31821
+    repos:
+      - hydra-monitors/hm-core
+      - hydra-monitors/another-repo
+    events: [push, release, pull_request, security]  # optional, omit for all events
+
+  # Example: All org repos to a different channel
+  # - chat_id: -100999999999
+  #   thread_id: null  # no thread
+  #   repos:
+  #     - hydra-monitors/*  # wildcard = all repos in org
+  #   events: [release, security]  # only major events
+
+  # Example: Security-only channel
+  # - chat_id: -100888888888
+  #   thread_id: 12345
+  #   repos:
+  #     - hydra-monitors/*
+  #   events: [security]
