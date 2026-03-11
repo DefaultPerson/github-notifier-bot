@@ -6,11 +6,11 @@ from bot.models.events import RepoBatch
 
 # Severity emoji mapping
 SEVERITY_EMOJI = {
-    "critical": "\U0001F534",  # 🔴
-    "high": "\U0001F7E0",      # 🟠
-    "medium": "\U0001F7E1",    # 🟡
-    "low": "\U0001F7E2",       # 🟢
-    "unknown": "\u26AA",       # ⚪
+    "critical": "\U0001f534",  # 🔴
+    "high": "\U0001f7e0",  # 🟠
+    "medium": "\U0001f7e1",  # 🟡
+    "low": "\U0001f7e2",  # 🟢
+    "unknown": "\u26aa",  # ⚪
 }
 
 
@@ -54,7 +54,7 @@ def format_push(payload: dict) -> tuple[str, str] | None:
     pusher_url = f"https://github.com/{pusher}"
 
     msg = (
-        f"\U0001F4DD Push to <b>{escape_html(repo)}</b> — "
+        f"\U0001f4dd Push to <b>{escape_html(repo)}</b> — "
         f"<code>{escape_html(branch)}</code> ({len(commits)} commit{'s' if len(commits) != 1 else ''})"
     )
 
@@ -90,7 +90,7 @@ def format_release(payload: dict) -> tuple[str, str] | None:
     author = release.get("author", {}).get("login", sender)
     author_url = release.get("author", {}).get("html_url", sender_url)
 
-    msg = f"\U0001F680 Release <b>{escape_html(tag)}</b> in {link(repo_url, repo)}"
+    msg = f"\U0001f680 Release <b>{escape_html(tag)}</b> in {link(repo_url, repo)}"
     if name and name != tag:
         msg += f"\nName: {escape_html(name)}"
     if url:
@@ -125,16 +125,16 @@ def format_pr(payload: dict) -> tuple[str, str] | None:
 
     # Determine emoji
     if sender == "dependabot[bot]":
-        emoji = "\U0001F916"  # 🤖
+        emoji = "\U0001f916"  # 🤖
     elif action == "opened":
-        emoji = "\U0001F4CB"  # 📋
+        emoji = "\U0001f4cb"  # 📋
     elif action == "closed" and pr.get("merged"):
-        emoji = "\u2705"      # ✅
+        emoji = "\u2705"  # ✅
         action = "merged"
     elif action == "closed":
-        emoji = "\u274C"      # ❌
+        emoji = "\u274c"  # ❌
     else:
-        emoji = "\U0001F504"  # 🔄
+        emoji = "\U0001f504"  # 🔄
 
     msg = (
         f"{emoji} PR {escape_html(action)} #{escape_html(str(pr_num))} — "
@@ -159,11 +159,11 @@ def format_review(payload: dict) -> tuple[str, str] | None:
 
     # Emoji based on state
     if state == "approved":
-        emoji = "\u2705"      # ✅
+        emoji = "\u2705"  # ✅
     elif state == "changes_requested":
-        emoji = "\u274C"      # ❌
+        emoji = "\u274c"  # ❌
     else:
-        emoji = "\U0001F4AC"  # 💬
+        emoji = "\U0001f4ac"  # 💬
 
     pr_num = pr.get("number", "?")
     pr_title = pr.get("title", "")
@@ -206,7 +206,7 @@ def format_review_comment(payload: dict) -> tuple[str, str] | None:
     sender_url = payload["sender"]["html_url"]
 
     msg = (
-        f"\U0001F4AC Review comment on #{escape_html(str(pr_num))} — "
+        f"\U0001f4ac Review comment on #{escape_html(str(pr_num))} — "
         f"{escape_html(pr_title)}\n"
         f"{link(pr_url, 'Open PR')} · {link(comment_url, 'Comment')}"
     )
@@ -230,7 +230,7 @@ def format_deploy_key(payload: dict) -> tuple[str, str] | None:
     sender = payload["sender"]["login"]
     sender_url = payload["sender"]["html_url"]
 
-    msg = f"\U0001F511 Deploy key {escape_html(action)} in {link(repo_url, repo)}"
+    msg = f"\U0001f511 Deploy key {escape_html(action)} in {link(repo_url, repo)}"
     msg += f"\nKey: {escape_html(title)}"
     msg += f"\nSender: {link(sender_url, sender)}"
     msg += "\n\n#github"
@@ -264,7 +264,7 @@ def format_security_digest(repo_batch: RepoBatch) -> str:
     severity_lines = []
     for sev in severity_order:
         if sev in severity_counts:
-            emoji = SEVERITY_EMOJI.get(sev, "\u26AA")
+            emoji = SEVERITY_EMOJI.get(sev, "\u26aa")
             severity_lines.append(f"{emoji} {sev}: {severity_counts[sev]}")
 
     # Group by package
@@ -283,7 +283,7 @@ def format_security_digest(repo_batch: RepoBatch) -> str:
 
     # Build message
     msg = (
-        f"\U0001F6A8 Security Alert: {count} vulnerabilit{'ies' if count > 1 else 'y'} "
+        f"\U0001f6a8 Security Alert: {count} vulnerabilit{'ies' if count > 1 else 'y'} "
         f"detected in {link(repo_url, repo_name)}"
     )
 
@@ -291,7 +291,7 @@ def format_security_digest(repo_batch: RepoBatch) -> str:
         msg += "\n\n" + "\n".join(severity_lines)
 
     if details:
-        msg += "\n\n\U0001F4CB Details:"
+        msg += "\n\n\U0001f4cb Details:"
         for i, detail in enumerate(details, 1):
             msg += f"\n{i}. {detail}"
         if len(packages) > 25:

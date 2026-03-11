@@ -69,9 +69,7 @@ async def github_webhook(request: Request) -> dict[str, str]:
         return {"status": result}
 
     # Handle regular events
-    result = await handle_regular_event(
-        event_type, payload, channels, dedup, sender
-    )
+    result = await handle_regular_event(event_type, payload, channels, dedup, sender)
     return {"status": result}
 
 

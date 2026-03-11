@@ -15,11 +15,7 @@ class TestVerifySignature:
         secret = "test-secret"
 
         # Generate valid signature
-        expected = "sha256=" + hmac.new(
-            secret.encode(),
-            payload,
-            hashlib.sha256
-        ).hexdigest()
+        expected = "sha256=" + hmac.new(secret.encode(), payload, hashlib.sha256).hexdigest()
 
         assert verify_signature(payload, expected, secret) is True
 
@@ -54,11 +50,7 @@ class TestVerifySignature:
         secret = "test-secret"
 
         # Generate signature for payload1
-        sig = "sha256=" + hmac.new(
-            secret.encode(),
-            payload1,
-            hashlib.sha256
-        ).hexdigest()
+        sig = "sha256=" + hmac.new(secret.encode(), payload1, hashlib.sha256).hexdigest()
 
         # Try to verify with payload2
         assert verify_signature(payload2, sig, secret) is False
@@ -70,11 +62,7 @@ class TestVerifySignature:
         secret2 = "secret2"
 
         # Generate signature with secret1
-        sig = "sha256=" + hmac.new(
-            secret1.encode(),
-            payload,
-            hashlib.sha256
-        ).hexdigest()
+        sig = "sha256=" + hmac.new(secret1.encode(), payload, hashlib.sha256).hexdigest()
 
         # Try to verify with secret2
         assert verify_signature(payload, sig, secret2) is False

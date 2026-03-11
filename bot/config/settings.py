@@ -18,7 +18,9 @@ class Settings(BaseSettings):
     bot_token: str = Field(..., description="Telegram Bot API token")
 
     # GitHub Webhook
-    github_webhook_secret: str = Field(..., description="GitHub webhook secret for HMAC verification")
+    github_webhook_secret: str = Field(
+        ..., description="GitHub webhook secret for HMAC verification"
+    )
 
     # Server
     host: str = Field("0.0.0.0", description="Webhook server host")

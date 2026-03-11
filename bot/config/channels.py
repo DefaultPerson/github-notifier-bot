@@ -17,12 +17,14 @@ def load_config_from_env(chat_id: int, thread_id: int | None, repos: str) -> Con
     """
     repo_list = [r.strip() for r in repos.split(",") if r.strip()]
     data = {
-        "channels": [{
-            "chat_id": chat_id,
-            "thread_id": thread_id,
-            "repos": repo_list,
-            "events": None,
-        }]
+        "channels": [
+            {
+                "chat_id": chat_id,
+                "thread_id": thread_id,
+                "repos": repo_list,
+                "events": None,
+            }
+        ]
     }
     return Config.model_validate(data)
 
