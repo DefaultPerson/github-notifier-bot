@@ -1,7 +1,7 @@
 # GitHub Notifier Bot
 
 <p align="center">
-  <img src="assets/image.png" width="200" alt="GitHub Notifier Bot">
+  <img src="assets/image.png" width="500" alt="GitHub Notifier Bot">
   <br><br>
   <img src="https://img.shields.io/badge/python-3.13-blue?logo=python&logoColor=white" alt="Python 3.13">
   <img src="https://img.shields.io/badge/aiogram-3.15-26A5E4?logo=telegram&logoColor=white" alt="aiogram 3">
