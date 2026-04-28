@@ -1,0 +1,37 @@
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      - BOT_TOKEN
+      - GITHUB_WEBHOOK_SECRET
+      - HOST=0.0.0.0
+      - PORT=8000
+      - CONFIG_PATH=/app/config.yaml
+      - DEDUP_TTL_SECONDS=10
+      - SECURITY_BATCH_WINDOW_SECONDS=60
+      - LOG_LEVEL=INFO
+    volumes:
+      # Coolify will surface this as a Persistent Storage entry and create
+      # the file on first deploy. Fill the file via Coolify UI, or seed it
+      # from compose by adding a `content: |` block (Coolify-only extension,
+      # not part of the standard compose schema). Example:
+      #
+      #   - type: bind
+      #     source: ./config.yaml
+      #     target: /app/config.yaml
+      #     content: |
+      #       channels:
+      #         - chat_id: -1002188528272
+      #           thread_id: 31821
+      #           repos:
+      #             - hydra-monitors/*
+      #         - chat_id: -1003980844885
+      #           thread_id: null
+      #           repos:
+      #             - hydra-monitors/*
+      - type: bind
+        source: ./config.yaml
+        target: /app/config.yaml
