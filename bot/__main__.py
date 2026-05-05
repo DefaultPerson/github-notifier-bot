@@ -55,7 +55,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     async def on_security_flush(channel: ChannelConfig, repo_batch: RepoBatch) -> None:
         """Callback for security batcher flush."""
         message = format_security_digest(repo_batch)
-        unique_key = f"security-digest-{repo_batch.repo_name}-{int(repo_batch.first_at)}"
+        unique_key = (
+            f"security-digest-{channel.chat_id}-{channel.thread_id}"
+            f"-{repo_batch.repo_name}-{int(repo_batch.first_at)}"
+        )
 
         if dedup.add_if_new(unique_key):
             await sender.send(
