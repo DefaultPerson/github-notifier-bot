@@ -23,3 +23,10 @@ channels:
   #   repos:
   #     - hydra-monitors/*
   #   events: [security]
+
+  # Example: All events except security alerts (blacklist)
+  # - chat_id: -100777777777
+  #   thread_id: null
+  #   repos:
+  #     - hydra-monitors/*
+  #   exclude_events: [security]

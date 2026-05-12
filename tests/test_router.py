@@ -135,6 +135,46 @@ class TestChannelRouter:
         security_channels = router.find_channels("org/repo", "security")
         assert len(security_channels) == 2
 
+    def test_exclude_events(self):
+        """Test exclude_events blacklist filtering."""
+        config = Config(
+            channels=[
+                ChannelConfig(
+                    chat_id=-1001234567890,
+                    thread_id=None,
+                    repos=["org/*"],
+                    events=None,
+                    exclude_events=["security"],
+                )
+            ]
+        )
+        router = ChannelRouter(config)
+
+        # Non-excluded events pass
+        assert len(router.find_channels("org/repo", "push")) == 1
+        assert len(router.find_channels("org/repo", "release")) == 1
+
+        # Excluded event is filtered out
+        assert len(router.find_channels("org/repo", "security")) == 0
+
+    def test_exclude_events_overrides_allowlist(self):
+        """Exclude_events takes precedence over events allowlist."""
+        config = Config(
+            channels=[
+                ChannelConfig(
+                    chat_id=-1001234567890,
+                    thread_id=None,
+                    repos=["org/repo"],
+                    events=["push", "security"],
+                    exclude_events=["security"],
+                )
+            ]
+        )
+        router = ChannelRouter(config)
+
+        assert len(router.find_channels("org/repo", "push")) == 1
+        assert len(router.find_channels("org/repo", "security")) == 0
+
     def test_multiple_repos_in_channel(self):
         """Test channel with multiple repo patterns."""
         config = Config(

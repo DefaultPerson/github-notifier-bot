@@ -28,6 +28,8 @@ class ChannelRouter:
                 continue
             if channel.events and event_type not in channel.events:
                 continue
+            if channel.exclude_events and event_type in channel.exclude_events:
+                continue
             matches.append(channel)
         return matches
 

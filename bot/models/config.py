@@ -24,6 +24,9 @@ class ChannelConfig(BaseModel):
     events: list[EventType] | None = Field(
         None, description="Event types to receive (None = all events)"
     )
+    exclude_events: list[EventType] | None = Field(
+        None, description="Event types to skip (applied after `events` allowlist)"
+    )
 
 
 class Config(BaseModel):
