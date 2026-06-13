@@ -1,8 +1,15 @@
 """Pytest fixtures for github-notifier-bot tests."""
 
+import os
 from unittest.mock import AsyncMock
 
 import pytest
+
+# Required by the module-level `settings = Settings()` in bot.config.settings,
+# instantiated on import (e.g. via bot.webhook.handlers). Set before any such
+# import happens during collection.
+os.environ.setdefault("BOT_TOKEN", "test-token")
+os.environ.setdefault("GITHUB_WEBHOOK_SECRET", "test-secret")
 
 
 @pytest.fixture

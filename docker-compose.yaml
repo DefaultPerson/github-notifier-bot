@@ -7,6 +7,8 @@ services:
     environment:
       - BOT_TOKEN
       - GITHUB_WEBHOOK_SECRET
+      # Comma-separated extra secrets, one per org/repo webhook (any match passes)
+      - GITHUB_WEBHOOK_SECRETS
       - HOST=0.0.0.0
       - PORT=8000
       - CONFIG_PATH=/app/config.yaml

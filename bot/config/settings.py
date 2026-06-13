@@ -1,6 +1,6 @@
 """Application settings loaded from environment variables."""
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, model_validator
 from pydantic_settings import BaseSettings
 
 
@@ -18,8 +18,15 @@ class Settings(BaseSettings):
     bot_token: str = Field(..., description="Telegram Bot API token")
 
     # GitHub Webhook
-    github_webhook_secret: str = Field(
-        ..., description="GitHub webhook secret for HMAC verification"
+    # One bot endpoint serves several GitHub webhooks (org- or repo-level), each
+    # with its own secret. A delivery is accepted if it matches ANY configured
+    # secret. `github_webhook_secret` is the legacy single value;
+    # `github_webhook_secrets` is a comma-separated list of additional secrets.
+    github_webhook_secret: str | None = Field(
+        None, description="Primary GitHub webhook secret for HMAC verification"
+    )
+    github_webhook_secrets: str | None = Field(
+        None, description="Additional comma-separated webhook secrets (one per repo/org)"
     )
 
     # Server
@@ -38,6 +45,32 @@ class Settings(BaseSettings):
 
     # Logging
     log_level: str = Field("INFO", description="Log level (DEBUG, INFO, WARNING, ERROR)")
+
+    @property
+    def webhook_secrets(self) -> list[str]:
+        """All configured webhook secrets, de-duplicated and order-preserving."""
+        raw: list[str] = []
+        if self.github_webhook_secret:
+            raw.append(self.github_webhook_secret)
+        if self.github_webhook_secrets:
+            raw.extend(self.github_webhook_secrets.split(","))
+
+        seen: set[str] = set()
+        result: list[str] = []
+        for secret in (s.strip() for s in raw):
+            if secret and secret not in seen:
+                seen.add(secret)
+                result.append(secret)
+        return result
+
+    @model_validator(mode="after")
+    def _require_at_least_one_secret(self) -> "Settings":
+        if not self.webhook_secrets:
+            raise ValueError(
+                "No webhook secret configured: set GITHUB_WEBHOOK_SECRET "
+                "and/or GITHUB_WEBHOOK_SECRETS"
+            )
+        return self
 
 
 settings = Settings()

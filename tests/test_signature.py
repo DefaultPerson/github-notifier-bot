@@ -3,7 +3,7 @@
 import hashlib
 import hmac
 
-from bot.webhook.signature import verify_signature
+from bot.webhook.signature import verify_signature, verify_signature_any
 
 
 class TestVerifySignature:
@@ -66,3 +66,59 @@ class TestVerifySignature:
 
         # Try to verify with secret2
         assert verify_signature(payload, sig, secret2) is False
+
+
+class TestVerifySignatureAny:
+    """Tests for verify_signature_any (multi-secret) function."""
+
+    @staticmethod
+    def _sign(payload: bytes, secret: str) -> str:
+        return "sha256=" + hmac.new(secret.encode(), payload, hashlib.sha256).hexdigest()
+
+    def test_matches_first_secret(self):
+        """Accept a signature produced with the first configured secret."""
+        payload = b'{"test": "data"}'
+        secrets = ["secret-a", "secret-b", "secret-c"]
+        sig = self._sign(payload, "secret-a")
+
+        assert verify_signature_any(payload, sig, secrets) is True
+
+    def test_matches_later_secret(self):
+        """Accept a signature produced with a non-first secret."""
+        payload = b'{"test": "data"}'
+        secrets = ["secret-a", "secret-b", "secret-c"]
+        sig = self._sign(payload, "secret-c")
+
+        assert verify_signature_any(payload, sig, secrets) is True
+
+    def test_matches_no_secret(self):
+        """Reject a signature that matches none of the secrets."""
+        payload = b'{"test": "data"}'
+        secrets = ["secret-a", "secret-b"]
+        sig = self._sign(payload, "other-secret")
+
+        assert verify_signature_any(payload, sig, secrets) is False
+
+    def test_empty_secrets(self):
+        """Reject when no secrets are configured."""
+        payload = b'{"test": "data"}'
+        sig = self._sign(payload, "secret-a")
+
+        assert verify_signature_any(payload, sig, []) is False
+
+    def test_skips_empty_secret_values(self):
+        """Empty/blank secret entries are ignored, not treated as a match."""
+        payload = b'{"test": "data"}'
+        sig = self._sign(payload, "secret-a")
+
+        # Empty strings must never validate; a real match still passes.
+        assert verify_signature_any(payload, sig, ["", "secret-a"]) is True
+        assert verify_signature_any(payload, sig, ["", "  "]) is False
+
+    def test_missing_signature(self):
+        """Reject missing or wrong-prefix signatures regardless of secrets."""
+        payload = b'{"test": "data"}'
+        secrets = ["secret-a"]
+
+        assert verify_signature_any(payload, "", secrets) is False
+        assert verify_signature_any(payload, "sha1=abc123", secrets) is False

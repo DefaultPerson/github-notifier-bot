@@ -4,7 +4,7 @@ import structlog
 from fastapi import APIRouter, HTTPException, Request
 
 from bot.config.settings import settings
-from bot.webhook.signature import verify_signature
+from bot.webhook.signature import verify_signature_any
 
 router = APIRouter(tags=["webhook"])
 logger = structlog.get_logger(__name__)
@@ -32,8 +32,8 @@ async def github_webhook(request: Request) -> dict[str, str]:
     body = await request.body()
     signature = request.headers.get("X-Hub-Signature-256", "")
 
-    # Verify signature
-    if not verify_signature(body, signature, settings.github_webhook_secret):
+    # Verify signature against any configured secret (one per repo/org webhook)
+    if not verify_signature_any(body, signature, settings.webhook_secrets):
         logger.warning("invalid_signature", signature=signature[:20] if signature else "missing")
         raise HTTPException(status_code=401, detail="Invalid signature")
 
