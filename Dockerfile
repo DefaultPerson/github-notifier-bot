@@ -11,8 +11,8 @@ FROM base AS runtime
 COPY --from=builder /app/dist/*.whl /tmp/
 RUN pip install --no-cache-dir /tmp/*.whl && rm /tmp/*.whl
 
-# Copy default config (override with volume mount)
-COPY config.yaml.example /app/config.yaml
+# Bake the production routing config into the image (see config.yaml)
+COPY config.yaml /app/config.yaml
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1

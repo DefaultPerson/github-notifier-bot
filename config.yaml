@@ -1,0 +1,18 @@
+# Production channel routing — baked into the image via the Dockerfile.
+# Edit here and redeploy. (The Coolify bind-mount was removed because
+# file-storage edits did not reliably materialize to the container's disk.)
+channels:
+  # hydra-monitors org -> channel A
+  - chat_id: -1003980844885
+    thread_id: null
+    repos:
+      - hydra-monitors/*
+    exclude_events: [security]
+
+  # web3aggregator org + DefaultPerson/transcription-bot -> channel B
+  - chat_id: -1002188528272
+    thread_id: null
+    repos:
+      - web3aggregator/*
+      - DefaultPerson/transcription-bot
+    exclude_events: [security]
