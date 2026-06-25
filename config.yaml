@@ -2,16 +2,16 @@
 # Edit here and redeploy. (The Coolify bind-mount was removed because
 # file-storage edits did not reliably materialize to the container's disk.)
 channels:
-  # hydra-monitors org -> channel A
+  # hydra-monitors org (hm-core etc.) -> channel A, topic 1921
   - chat_id: -1003980844885
-    thread_id: null
+    thread_id: 1921
     repos:
       - hydra-monitors/*
     exclude_events: [security]
 
-  # web3aggregator org + DefaultPerson/transcription-bot -> channel B
+  # web3aggregator (w3a) + DefaultPerson/transcription-bot (tra) -> channel B, topic 31821
   - chat_id: -1002188528272
-    thread_id: null
+    thread_id: 31821
     repos:
       - web3aggregator/*
       - DefaultPerson/transcription-bot
