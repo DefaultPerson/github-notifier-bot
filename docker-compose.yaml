@@ -11,10 +11,18 @@ services:
       - GITHUB_WEBHOOK_SECRETS
       - HOST=0.0.0.0
       - PORT=8000
+      # Routing: one destination for every event (see .env.example).
+      - CHANNEL_CHAT_ID
+      - CHANNEL_THREAD_ID
+      - CHANNEL_REPOS
+      - CHANNEL_EVENTS
+      - CHANNEL_EXCLUDE_EVENTS
+      # Fallback multi-channel file, only read when CHANNEL_* are not set.
       - CONFIG_PATH=/app/config.yaml
       - DEDUP_TTL_SECONDS=10
       - SECURITY_BATCH_WINDOW_SECONDS=60
       - LOG_LEVEL=INFO
-    # Channel routing lives in config.yaml, baked into the image (Dockerfile).
-    # No bind-mount: Coolify file-storage edits did not reliably reach the
-    # container, which caused events to route with a stale config.
+    # No bind-mount for config.yaml: Coolify file-storage edits did not
+    # reliably reach the container, which caused events to route with a
+    # stale config. Routing is therefore env-driven; config.yaml is baked
+    # into the image (Dockerfile) purely as the multi-channel fallback.

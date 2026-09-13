@@ -1,18 +1,11 @@
-# Production channel routing — baked into the image via the Dockerfile.
-# Edit here and redeploy. (The Coolify bind-mount was removed because
-# file-storage edits did not reliably materialize to the container's disk.)
-channels:
-  # hydra-monitors org (hm-core etc.) -> channel A, topic 1921
-  - chat_id: -1003980844885
-    thread_id: 1921
-    repos:
-      - hydra-monitors/*
-    exclude_events: [security]
-
-  # web3aggregator (w3a) + DefaultPerson/transcription-bot (tra) -> channel B, topic 31821
-  - chat_id: -1002188528272
-    thread_id: 31821
-    repos:
-      - web3aggregator/*
-      - DefaultPerson/transcription-bot
-    exclude_events: [security]
+# Channel routing fallback, baked into the image via the Dockerfile.
+#
+# Production routing is configured with the CHANNEL_* environment variables
+# (CHANNEL_CHAT_ID, CHANNEL_THREAD_ID, CHANNEL_REPOS, CHANNEL_EVENTS,
+# CHANNEL_EXCLUDE_EVENTS — see .env.example): one destination for everything.
+# When CHANNEL_CHAT_ID and CHANNEL_REPOS are set this file is not read.
+#
+# The bot refuses to start on an empty channel list, so a deployment with
+# neither CHANNEL_* nor a real routing file fails loudly instead of silently
+# dropping every event. For multi-channel routing see config.yaml.example.
+channels: []

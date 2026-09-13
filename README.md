@@ -24,4 +24,4 @@ Payload URL: `https://<your-domain>/webhook/github`, content type `application/j
 
 ## Config
 
-Single channel via env vars (see `.env.example`) or multi-channel via `config.yaml` (see `config.yaml.example`).
+Single destination via env vars (`CHANNEL_CHAT_ID`, `CHANNEL_THREAD_ID`, `CHANNEL_REPOS`, optional `CHANNEL_EVENTS` / `CHANNEL_EXCLUDE_EVENTS`, see `.env.example`) or multi-channel via `config.yaml` (see `config.yaml.example`). Env vars take precedence; the bot refuses to start with an empty channel list.

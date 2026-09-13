@@ -38,6 +38,12 @@ class Settings(BaseSettings):
     channel_chat_id: int | None = Field(None, description="Telegram chat ID")
     channel_thread_id: int | None = Field(None, description="Telegram thread ID")
     channel_repos: str | None = Field(None, description="Comma-separated repo patterns")
+    channel_events: str | None = Field(
+        None, description="Comma-separated event allowlist (omit for all events)"
+    )
+    channel_exclude_events: str | None = Field(
+        None, description="Comma-separated event types to skip (applied after the allowlist)"
+    )
 
     # Dedup & Batching
     dedup_ttl_seconds: int = Field(10, description="Dedup TTL in seconds")

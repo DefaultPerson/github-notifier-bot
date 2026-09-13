@@ -42,10 +42,14 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
             settings.channel_chat_id,
             settings.channel_thread_id,
             settings.channel_repos,
+            settings.channel_events,
+            settings.channel_exclude_events,
         )
+        config_source = "env"
     else:
         config = load_config_from_file(settings.config_path)
-    logger.info("config_loaded", channels=len(config.channels))
+        config_source = settings.config_path
+    logger.info("config_loaded", source=config_source, channels=len(config.channels))
 
     # Initialize services
     channel_router = ChannelRouter(config)
